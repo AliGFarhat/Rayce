@@ -3,7 +3,8 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - AI
   layers:
   - Default
   - TransparentFX
@@ -40,6 +41,9 @@ TagManager:
   m_SortingLayers:
   - name: Background
     uniqueID: 4263483955
+    locked: 0
+  - name: Roads
+    uniqueID: 4067769891
     locked: 0
   - name: Skidmarks
     uniqueID: 1120074101

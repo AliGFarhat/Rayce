@@ -3,23 +3,26 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 
-public class CarSFXHandler : MonoBehaviour
+public class CarSfxHandler : MonoBehaviour
 {
     [Header("Mixers")]
     public AudioMixer audioMixer;
 
-    [Header("Audio Sources")]
+    [Header("Audio sources")]
     public AudioSource tiresScreechingAudioSource;
     public AudioSource engineAudioSource;
     public AudioSource carHitAudioSource;
+    public AudioSource carJumpAudioSource;
+    public AudioSource carJumpLandingAudioSource;
 
-    // Local Variable
+    //Local variables
     float desiredEnginePitch = 0.5f;
     float tireScreechPitch = 0.5f;
 
-    // Components
+    //Components
     TopDownCarController topDownCarController;
 
+    //Awake is called when the script instance is being loaded.
     void Awake()
     {
         topDownCarController = GetComponentInParent<TopDownCarController>();
@@ -28,41 +31,42 @@ public class CarSFXHandler : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        audioMixer.SetFloat("SFXVolume", 0.5f); // Set the volume of "SFX Volume" in the audio mixers when the game starts.
+        //Example for recording, move this part to any setting script that your game might use. 
+        //audioMixer.SetFloat("SFXVolume", 0.5f);
     }
 
     // Update is called once per frame
     void Update()
     {
-         UpdateEngineSFX();
-         UpdateTiresScreechingSFX();
+        UpdateEngineSFX();
+        UpdateTiresScreechingSFX();
     }
 
     void UpdateEngineSFX()
     {
-        // Handle Engine SFX
+        //Handle engine SFX
         float velocityMagnitude = topDownCarController.GetVelocityMagnitude();
 
-        // Increase the engine volume as the car goes faster and faster.
+        //Increase the engine volume as the car goes faster
         float desiredEngineVolume = velocityMagnitude * 0.05f;
 
-        // Keep the volume at a minimum level so it keeps playing regardless. Also adding a max level.
+        //But keep a minimum level so it playes even if the car is idle
         desiredEngineVolume = Mathf.Clamp(desiredEngineVolume, 0.2f, 1.0f);
 
         engineAudioSource.volume = Mathf.Lerp(engineAudioSource.volume, desiredEngineVolume, Time.deltaTime * 10);
 
-        // To make the engine sound have more variation, the pitch is adjusted.
+        //To add more variation to the engine sound we also change the pitch
         desiredEnginePitch = velocityMagnitude * 0.2f;
-        desiredEnginePitch = Mathf.Clamp(desiredEnginePitch, 0.5f, 1.8f);
+        desiredEnginePitch = Mathf.Clamp(desiredEnginePitch, 0.5f, 2f);
         engineAudioSource.pitch = Mathf.Lerp(engineAudioSource.pitch, desiredEnginePitch, Time.deltaTime * 1.5f);
     }
 
     void UpdateTiresScreechingSFX()
     {
-        // Handle tire screeching SFX
+        //Handle tire screeching SFX
         if (topDownCarController.IsTireScreeching(out float lateralVelocity, out bool isBraking))
         {
-            // If car is braking screech should be louder.
+            //If the car is braking we want the tire screech to be louder and also change the pitch.
             if (isBraking)
             {
                 tiresScreechingAudioSource.volume = Mathf.Lerp(tiresScreechingAudioSource.volume, 1.0f, Time.deltaTime * 10);
@@ -70,18 +74,28 @@ public class CarSFXHandler : MonoBehaviour
             }
             else
             {
-                // If not braking. Play the screech sound when drifting.
+                //If we are not braking we still want to play this screech sound if the player is drifting.
                 tiresScreechingAudioSource.volume = Mathf.Abs(lateralVelocity) * 0.05f;
                 tireScreechPitch = Mathf.Abs(lateralVelocity) * 0.1f;
             }
         }
-        // Fade out the tire screech SFX if no screeching is happening.
+        //Fade out the tire screech SFX if we are not screeching. 
         else tiresScreechingAudioSource.volume = Mathf.Lerp(tiresScreechingAudioSource.volume, 0, Time.deltaTime * 10);
+    }
+
+    public void PlayJumpSfx()
+    {
+        carJumpAudioSource.Play();
+    }
+
+    public void PlayLandingSfx()
+    {
+        carJumpLandingAudioSource.Play();
     }
 
     void OnCollisionEnter2D(Collision2D collision2D)
     {
-        // Get the relative velocity of the collision
+        //Get the relative velocity of the collision
         float relativeVelocity = collision2D.relativeVelocity.magnitude;
 
         float volume = relativeVelocity * 0.1f;
@@ -92,4 +106,6 @@ public class CarSFXHandler : MonoBehaviour
         if (!carHitAudioSource.isPlaying)
             carHitAudioSource.Play();
     }
+
+
 }
