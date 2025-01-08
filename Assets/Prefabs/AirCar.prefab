@@ -15584,7 +15584,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   aiMode: 1
-  maxSpeed: 16
+  maxSpeed: 20
   isAvoidingCars: 1
   skillLevel: 1
 --- !u!114 &3232303178330570580
