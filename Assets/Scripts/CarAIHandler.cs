@@ -11,20 +11,16 @@ public class CarAIHandler : MonoBehaviour
     public AIMode aiMode;
     public float maxSpeed = 16;
     public bool isAvoidingCars = true;
-    [Range(0.0f, 1.0f)]
-    public float skillLevel = 1.0f;
 
     //Local variables
     Vector3 targetPosition = Vector3.zero;
     Transform targetTransform = null;
-    float orignalMaximumSpeed = 0;
 
     //Avoidance
     Vector2 avoidanceVectorLerped = Vector3.zero;
 
     //Waypoints
     WaypointNode currentWaypoint = null;
-    WaypointNode previousWaypoint = null;
     WaypointNode[] allWayPoints;
 
     //Colliders
@@ -40,14 +36,11 @@ public class CarAIHandler : MonoBehaviour
         allWayPoints = FindObjectsOfType<WaypointNode>();
 
         polygonCollider2D = GetComponentInChildren<PolygonCollider2D>();
-
-        orignalMaximumSpeed = maxSpeed;
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        SetMaxSpeedBasedOnSkillLevel(maxSpeed);
     }
 
     // Update is called once per frame and is frame dependent
@@ -92,10 +85,7 @@ public class CarAIHandler : MonoBehaviour
     {
         //Pick the cloesest waypoint if we don't have a waypoint set.
         if (currentWaypoint == null)
-        {
             currentWaypoint = FindClosestWayPoint();
-            previousWaypoint = currentWaypoint;
-        }
 
         //Set the target on the waypoints position
         if (currentWaypoint != null)
@@ -110,11 +100,8 @@ public class CarAIHandler : MonoBehaviour
             if (distanceToWayPoint <= currentWaypoint.minDistanceToReachWaypoint)
             {
                 if (currentWaypoint.maxSpeed > 0)
-                    SetMaxSpeedBasedOnSkillLevel(currentWaypoint.maxSpeed);
-                else SetMaxSpeedBasedOnSkillLevel(1000);
-
-                //Store the current waypoint as previous before we assign a new current one.
-                previousWaypoint = currentWaypoint;
+                    maxSpeed = currentWaypoint.maxSpeed;
+                else maxSpeed = 1000;
 
                 //If we are close enough then follow to the next waypoint, if there are multiple waypoints then pick one at random.
                 currentWaypoint = currentWaypoint.nextWaypointNode[Random.Range(0, currentWaypoint.nextWaypointNode.Length)];
@@ -146,7 +133,7 @@ public class CarAIHandler : MonoBehaviour
         vectorToTarget.Normalize();
 
         //Apply avoidance to steering
-        if (isAvoidingCars && !topDownCarController.IsJumping())
+        if (isAvoidingCars)
             AvoidCars(vectorToTarget, out vectorToTarget);
 
         //Calculate an angle towards the target 
@@ -168,40 +155,8 @@ public class CarAIHandler : MonoBehaviour
         if (topDownCarController.GetVelocityMagnitude() > maxSpeed)
             return 0;
 
-        //Apply throttle forward based on how much the car wants to turn. If it's a sharp turn this will cause the car to apply less speed forward. We store this as reduceSpeedDueToCornering so we can use it togehter with the skill level
-        float reduceSpeedDueToCornering = Mathf.Abs(inputX) / 1.0f;
-
-        //Apply throttle based on cornering and skill.
-        return 1.05f - reduceSpeedDueToCornering * skillLevel;
-    }
-
-    void SetMaxSpeedBasedOnSkillLevel(float newSpeed)
-    {
-        maxSpeed = Mathf.Clamp(newSpeed, 0, orignalMaximumSpeed);
-
-        float skillbasedMaxiumSpeed = Mathf.Clamp(skillLevel, 0.3f, 1.0f);
-        maxSpeed = maxSpeed * skillbasedMaxiumSpeed;
-    }
-
-
-    //Finds the nearest point on a line. 
-    Vector2 FindNearestPointOnLine(Vector2 lineStartPosition, Vector2 lineEndPosition, Vector2 point)
-    {
-        //Get heading as a vector
-        Vector2 lineHeadingVector = (lineEndPosition - lineStartPosition);
-
-        //Store the max distance
-        float maxDistance = lineHeadingVector.magnitude;
-        lineHeadingVector.Normalize();
-
-        //Do projection from the start position to the point
-        Vector2 lineVectorStartToPoint = point - lineStartPosition;
-        float dotProduct = Vector2.Dot(lineVectorStartToPoint, lineHeadingVector);
-
-        //Clamp the dot product to maxDistance
-        dotProduct = Mathf.Clamp(dotProduct, 0f, maxDistance);
-
-        return lineStartPosition + lineHeadingVector * dotProduct;
+        //Apply throttle forward based on how much the car wants to turn. If it's a sharp turn this will cause the car to apply less speed forward.
+        return 1.05f - Mathf.Abs(inputX) / 1.0f;
     }
 
     //Checks for cars ahead of the car.
