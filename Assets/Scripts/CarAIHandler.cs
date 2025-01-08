@@ -90,7 +90,7 @@ public class CarAIHandler : MonoBehaviour
     //AI follows waypoints
     void FollowWaypoints()
     {
-        //Pick the cloesest waypoint if we don't have a waypoint set.
+        // Pick the closest waypoint if we don't have a waypoint set.
         if (currentWaypoint == null)
         {
             currentWaypoint = FindClosestWayPoint();
