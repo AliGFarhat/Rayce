@@ -19,6 +19,13 @@ public class CarAIHandler : MonoBehaviour
     Transform targetTransform = null;
     float orignalMaximumSpeed = 0;
 
+    //Stuck handling
+    bool isRunningStuckCheck = false;
+    bool isFirstTemporaryWaypoint = false;
+    int stuckCheckCounter = 0;
+    List<Vector2> temporaryWaypoints = new List<Vector2>();
+    float angleToTarget = 0;
+
     //Avoidance
     Vector2 avoidanceVectorLerped = Vector3.zero;
 
@@ -32,12 +39,15 @@ public class CarAIHandler : MonoBehaviour
 
     //Components
     TopDownCarController topDownCarController;
+    AStarLite aStarLite;
 
     //Awake is called when the script instance is being loaded.
     void Awake()
     {
         topDownCarController = GetComponent<TopDownCarController>();
         allWayPoints = FindObjectsOfType<WaypointNode>();
+
+        aStarLite = GetComponent<AStarLite>();
 
         polygonCollider2D = GetComponentInChildren<PolygonCollider2D>();
 
@@ -62,7 +72,10 @@ public class CarAIHandler : MonoBehaviour
                 break;
 
             case AIMode.followWaypoints:
-                FollowWaypoints();
+                if (temporaryWaypoints.Count == 0)
+                    FollowWaypoints();
+                else FollowTemporaryWayPoints();
+
                 break;
 
             case AIMode.followMouse:
@@ -72,6 +85,15 @@ public class CarAIHandler : MonoBehaviour
 
         inputVector.x = TurnTowardTarget();
         inputVector.y = ApplyThrottleOrBrake(inputVector.x);
+
+        //If the AI is applying throttle but not manging to get any speed then lets run our stuck check.
+        if (topDownCarController.GetVelocityMagnitude() < 0.5f && Mathf.Abs(inputVector.y) > 0.01f && !isRunningStuckCheck)
+            StartCoroutine(StuckCheckCO());
+
+        //Handle special case where the car has reversed for a while then it should check if it is still stuck. If it is not then it will drive forward again.
+        if (stuckCheckCounter >= 4 && !isRunningStuckCheck)
+            StartCoroutine(StuckCheckCO());
+
 
         //Send the input to the car controller.
         topDownCarController.SetInputVector(inputVector);
@@ -90,7 +112,7 @@ public class CarAIHandler : MonoBehaviour
     //AI follows waypoints
     void FollowWaypoints()
     {
-        // Pick the closest waypoint if we don't have a waypoint set.
+        //Pick the cloesest waypoint if we don't have a waypoint set.
         if (currentWaypoint == null)
         {
             currentWaypoint = FindClosestWayPoint();
@@ -106,17 +128,13 @@ public class CarAIHandler : MonoBehaviour
             //Store how close we are to the target
             float distanceToWayPoint = (targetPosition - transform.position).magnitude;
 
-            // Navigate towards nearest point on line
-            if (distanceToWayPoint > 20)
-            {
-                Vector3 nearestPointOnTheWayPointLine = FindNearestPointOnLine(previousWaypoint.transform.position, currentWaypoint.transform.position, transform.position);
+            Vector3 nearestPointOnTheWayPointLine = FindNearestPointOnLine(previousWaypoint.transform.position, currentWaypoint.transform.position, transform.position);
 
-                float segments = distanceToWayPoint / 20.0f;
+            float segments = distanceToWayPoint / 20.0f;
 
-                targetPosition = (targetPosition + nearestPointOnTheWayPointLine * segments) / (segments + 1);
+            targetPosition = (targetPosition + nearestPointOnTheWayPointLine * segments) / (segments + 1);
 
-                Debug.DrawLine(transform.position, targetPosition, Color.cyan);
-            }
+            Debug.DrawLine(transform.position, targetPosition, Color.cyan);
 
             //Check if we are close enough to consider that we have reached the waypoint
             if (distanceToWayPoint <= currentWaypoint.minDistanceToReachWaypoint)
@@ -131,6 +149,31 @@ public class CarAIHandler : MonoBehaviour
                 //If we are close enough then follow to the next waypoint, if there are multiple waypoints then pick one at random.
                 currentWaypoint = currentWaypoint.nextWaypointNode[Random.Range(0, currentWaypoint.nextWaypointNode.Length)];
             }
+        }
+    }
+
+    //AI follows waypoints
+    void FollowTemporaryWayPoints()
+    {
+        //Set the target position of for the AI. 
+        targetPosition = temporaryWaypoints[0];
+
+        //Store how close we are to the target
+        float distanceToWayPoint = (targetPosition - transform.position).magnitude;
+
+        //Drive a bit slower than usual
+        SetMaxSpeedBasedOnSkillLevel(5);
+
+        //Check if we are close enough to consider that we have reached the waypoint
+        float minDistanceToReachWaypoint = 1.5f;
+
+        if (!isFirstTemporaryWaypoint)
+            minDistanceToReachWaypoint = 3.0f;
+
+        if (distanceToWayPoint <= minDistanceToReachWaypoint)
+        {
+            temporaryWaypoints.RemoveAt(0);
+            isFirstTemporaryWaypoint = false;
         }
     }
 
@@ -162,7 +205,7 @@ public class CarAIHandler : MonoBehaviour
             AvoidCars(vectorToTarget, out vectorToTarget);
 
         //Calculate an angle towards the target 
-        float angleToTarget = Vector2.SignedAngle(transform.up, vectorToTarget);
+        angleToTarget = Vector2.SignedAngle(transform.up, vectorToTarget);
         angleToTarget *= -1;
 
         //We want the car to turn as much as possible if the angle is greater than 45 degrees and we wan't it to smooth out so if the angle is small we want the AI to make smaller corrections. 
@@ -184,7 +227,23 @@ public class CarAIHandler : MonoBehaviour
         float reduceSpeedDueToCornering = Mathf.Abs(inputX) / 1.0f;
 
         //Apply throttle based on cornering and skill.
-        return 1.05f - reduceSpeedDueToCornering * skillLevel;
+        float throttle = 1.05f - reduceSpeedDueToCornering * skillLevel;
+
+        //Handle throttle differently when we are following temp waypoints
+        if (temporaryWaypoints.Count() != 0)
+        {
+            //If the angle is larger to reach the target the it is better to reverse. 
+            if (angleToTarget > 70)
+                throttle = throttle * -1;
+            else if (angleToTarget < -70)
+                throttle = throttle * -1;
+            //If we are still stuck after a number of attempts then just reverse. 
+            else if (stuckCheckCounter > 3)
+                throttle = throttle * -1;
+        }
+
+        //Apply throttle based on cornering and skill.
+        return throttle;
     }
 
     void SetMaxSpeedBasedOnSkillLevel(float newSpeed)
@@ -290,5 +349,32 @@ public class CarAIHandler : MonoBehaviour
 
         //We need assign a default value if we didn't hit any cars before we exit the function. 
         newVectorToTarget = vectorToTarget;
+    }
+
+    IEnumerator StuckCheckCO()
+    {
+        Vector3 initialStuckPosition = transform.position;
+
+        isRunningStuckCheck = true;
+
+        yield return new WaitForSeconds(0.7f);
+
+        //if we have not moved for a second then we are stuck
+        if ((transform.position - initialStuckPosition).sqrMagnitude < 3)
+        {
+            //Get a path to the desired position
+            temporaryWaypoints = aStarLite.FindPath(currentWaypoint.transform.position);
+
+            //If there was no path found then it will be null so if that happens just make a new empty list.
+            if (temporaryWaypoints == null)
+                temporaryWaypoints = new List<Vector2>();
+
+            stuckCheckCounter++;
+
+            isFirstTemporaryWaypoint = true;
+        }
+        else stuckCheckCounter = 0;
+
+        isRunningStuckCheck = false;
     }
 }
