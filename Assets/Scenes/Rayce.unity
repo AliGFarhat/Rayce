@@ -6878,6 +6878,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: AirCar
       objectReference: {fileID: 0}
+    - target: {fileID: 7691454621125861119, guid: ce925d7fc5bfb16438fe8f664eea15b2, type: 3}
+      propertyPath: maxSpeed
+      value: 20
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -8918,7 +8922,7 @@ Transform:
   m_GameObject: {fileID: 1455664304}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 36.6, y: -13.74, z: 0}
+  m_LocalPosition: {x: 36.6, y: -15.54, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -17480,6 +17484,67 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1437718805}
   m_LocalEulerAnglesHint: {x: 0, y: -0.375, z: 0}
+--- !u!1001 &1909539804
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 6441133141737909113, guid: ce925d7fc5bfb16438fe8f664eea15b2, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -20
+      objectReference: {fileID: 0}
+    - target: {fileID: 6441133141737909113, guid: ce925d7fc5bfb16438fe8f664eea15b2, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 6441133141737909113, guid: ce925d7fc5bfb16438fe8f664eea15b2, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6441133141737909113, guid: ce925d7fc5bfb16438fe8f664eea15b2, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 6441133141737909113, guid: ce925d7fc5bfb16438fe8f664eea15b2, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6441133141737909113, guid: ce925d7fc5bfb16438fe8f664eea15b2, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6441133141737909113, guid: ce925d7fc5bfb16438fe8f664eea15b2, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 6441133141737909113, guid: ce925d7fc5bfb16438fe8f664eea15b2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6441133141737909113, guid: ce925d7fc5bfb16438fe8f664eea15b2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6441133141737909113, guid: ce925d7fc5bfb16438fe8f664eea15b2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 7353820260985601900, guid: ce925d7fc5bfb16438fe8f664eea15b2, type: 3}
+      propertyPath: m_Name
+      value: AirCar (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7691454621125861119, guid: ce925d7fc5bfb16438fe8f664eea15b2, type: 3}
+      propertyPath: maxSpeed
+      value: 20
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: ce925d7fc5bfb16438fe8f664eea15b2, type: 3}
 --- !u!1 &1920286287
 GameObject:
   m_ObjectHideFlags: 0
@@ -18676,6 +18741,7 @@ SceneRoots:
   - {fileID: 1605283565}
   - {fileID: 7429197693604263144}
   - {fileID: 645924573}
+  - {fileID: 1909539804}
   - {fileID: 1437718805}
   - {fileID: 523282999}
   - {fileID: 131519185}
