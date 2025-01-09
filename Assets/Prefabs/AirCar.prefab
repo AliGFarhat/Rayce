@@ -222,8 +222,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 2088327753
+  m_SortingLayer: 2
   m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 68eb70cd6d597444daada6ed13b4e31c, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -5140,7 +5140,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 674689661
-  m_SortingLayer: 1
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_RenderMode: 0
   m_MeshDistribution: 0
@@ -5230,7 +5230,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 4922977431282854482, guid: 34a7148bcb495d449a3c26b7e83d7f04, type: 2}
   m_audioClip: {fileID: 8300000, guid: 2698c1336ba20554f94d1d7d00902aa2, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0
+  m_Volume: 0.75
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -10248,7 +10248,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 674689661
-  m_SortingLayer: 1
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_RenderMode: 0
   m_MeshDistribution: 0
@@ -10364,9 +10364,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: -1
+  m_SortingLayerID: 1922337167
+  m_SortingLayer: 1
+  m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 2a46d201efdbb534d88e4f3bc5b7981e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -10422,7 +10422,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 765278545216376696, guid: 34a7148bcb495d449a3c26b7e83d7f04, type: 2}
   m_audioClip: {fileID: 8300000, guid: 4ba6a607849a611439bb26e4d7f5187b, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0
+  m_Volume: 0.75
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -15548,7 +15548,52 @@ MonoBehaviour:
   carShadowRenderer: {fileID: 6020049045623541309}
   jumpCurve:
     serializedVersion: 2
-    m_Curve: []
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.39999998
+      value: 0.9999987
+      inSlope: 0.034120835
+      outSlope: 0.034120835
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 1
+    - serializedVersion: 3
+      time: 0.5
+      value: 1.0000007
+      inSlope: Infinity
+      outSlope: Infinity
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.59999996
+      value: 1
+      inSlope: 0.015620064
+      outSlope: 0.015620064
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.7018974
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: -0.00022506714
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
