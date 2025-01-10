@@ -562,6 +562,7 @@ GameObject:
   - component: {fileID: 9081581479815925845}
   - component: {fileID: 3753819671832048184}
   - component: {fileID: 1856489839487077810}
+  - component: {fileID: 9081581479815925846}
   m_Layer: 5
   m_Name: Canvas - Menu
   m_TagString: Untagged
@@ -758,6 +759,18 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &9081581479815925846
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3333380625933598396}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 215d06a23f13ecd4eb587796f5657ee8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
