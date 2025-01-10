@@ -7,6 +7,7 @@ TagManager:
   - AI
   - Jump
   - CheckPoint
+  - SpawnPoint
   layers:
   - Default
   - TransparentFX

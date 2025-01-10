@@ -15840,7 +15840,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42542a3ff6376964c9511f6eea6aba7b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  carPositionText: {fileID: 0}
+  carPositionText: {fileID: 4419973015994507249}
 --- !u!1 &7809245446291722865
 GameObject:
   m_ObjectHideFlags: 0

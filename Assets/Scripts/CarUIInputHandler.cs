@@ -12,16 +12,7 @@ public class CarUIInputHandler : MonoBehaviour
     {
         CarInputHandler[] carinputHandlers = FindObjectsOfType<CarInputHandler>();
 
-        foreach (CarInputHandler carInputHandler in carinputHandlers)
-        {
-            if (carInputHandler.isUIInput)
-            {
-                playerCarInputHandler = carInputHandler;
-                break;
-            }
-        }
-
-
+        foreach (CarInputHandler carInputHandler in carinputHandlers);
     }
 
     // Start is called before the first frame update

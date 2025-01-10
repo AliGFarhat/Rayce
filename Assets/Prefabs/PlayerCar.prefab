@@ -11144,6 +11144,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aca13f42f3b5a3a4c96a2d6be71685c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerNumber: 1
 --- !u!114 &1579396720011627057
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11244,7 +11245,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42542a3ff6376964c9511f6eea6aba7b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  carPositionText: {fileID: 0}
+  carPositionText: {fileID: 8785060010562467985}
 --- !u!1 &8792679477645645919
 GameObject:
   m_ObjectHideFlags: 0

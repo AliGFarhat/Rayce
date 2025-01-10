@@ -5,7 +5,6 @@ using UnityEngine;
 public class CarInputHandler : MonoBehaviour
 {
     public int playerNumber = 1;
-    public bool isUIInput = false;
 
     Vector2 inputVector = Vector2.zero;
 
@@ -27,11 +26,6 @@ public class CarInputHandler : MonoBehaviour
     // Update is called once per frame and is frame dependent
     void Update()
     {
-        if (isUIInput)
-        {
-
-        }
-        else
         {
             inputVector = Vector2.zero;
 
