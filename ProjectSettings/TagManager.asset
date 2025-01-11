@@ -12,7 +12,7 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - ObjectFlying
   - Water
   - UI
   - Car
@@ -56,9 +56,6 @@ TagManager:
     locked: 0
   - name: Flying
     uniqueID: 1922337167
-    locked: 0
-  - name: CarSprite
-    uniqueID: 2088327753
     locked: 0
   - name: Particles
     uniqueID: 674689661

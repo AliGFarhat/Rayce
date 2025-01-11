@@ -4922,9 +4922,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 1922337167
-  m_SortingLayer: 1
-  m_SortingOrder: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: -1
   m_Sprite: {fileID: 21300000, guid: 2a46d201efdbb534d88e4f3bc5b7981e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -10446,9 +10446,11 @@ GameObject:
   - component: {fileID: 8488953563752898024}
   - component: {fileID: 5620628739305713980}
   - component: {fileID: 2266696416344017466}
+  - component: {fileID: 3614304767022312314}
+  - component: {fileID: -5236963784323118024}
   m_Layer: 6
   m_Name: PlayerCarBlue
-  m_TagString: Player
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -10614,6 +10616,35 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   carPositionText: {fileID: 3722758467595107715}
+--- !u!114 &3614304767022312314
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4226875028515229914}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c75d5e012142c24e8c6b78b41996b8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  aiMode: 1
+  maxSpeed: 20
+  isAvoidingCars: 1
+  skillLevel: 1
+--- !u!114 &-5236963784323118024
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4226875028515229914}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d5bdf0c23c100740897e45f9faa5155, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isDebugActiveForCar: 0
 --- !u!1 &4451877113085684162
 GameObject:
   m_ObjectHideFlags: 0
@@ -11141,9 +11172,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 2088327753
-  m_SortingLayer: 2
-  m_SortingOrder: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 68eb70cd6d597444daada6ed13b4e31c, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

@@ -49,6 +49,9 @@ public class TopDownCarController : MonoBehaviour
     //Frame-rate independent for physics calculations.
     void FixedUpdate()
     {
+        if (GameManager.instance.GetGameState() == GameStates.countDown)
+            return;
+
         ApplyEngineForce();
 
         KillOrthogonalVelocity();
@@ -151,18 +154,13 @@ public class TopDownCarController : MonoBehaviour
         return carRigidbody2D.velocity.magnitude;
     }
 
-    public void Jump(float jumpHeightScale, float jumpPushScale)
+    public void Jump(float jumpHeightScale, float jumpPushScale, int carColliderLayerBeforeJump)
     {
         if (!isJumping)
-            StartCoroutine(JumpCo(jumpHeightScale, jumpPushScale));
+            StartCoroutine(JumpCo(jumpHeightScale, jumpPushScale, carColliderLayerBeforeJump));
     }
 
-    public bool IsJumping()
-    {
-        return isJumping;
-    }
-
-    private IEnumerator JumpCo(float jumpHeightScale, float jumpPushScale)
+    private IEnumerator JumpCo(float jumpHeightScale, float jumpPushScale, int carColliderLayerBeforeJump)
     {
         isJumping = true;
 
@@ -172,8 +170,8 @@ public class TopDownCarController : MonoBehaviour
         jumpHeightScale = jumpHeightScale * carRigidbody2D.velocity.magnitude * 0.05f;
         jumpHeightScale = Mathf.Clamp(jumpHeightScale, 0.0f, 1.0f);
 
-        //Disable collisions
-        carCollider.enabled = false;
+        //Change the layer of the car, as we have jumped we are now flying
+        carCollider.gameObject.layer = LayerMask.NameToLayer("ObjectFlying");
 
         carSfxHandler.PlayJumpSfx();
 
@@ -206,14 +204,28 @@ public class TopDownCarController : MonoBehaviour
             yield return null;
         }
 
-        //Check if landing is ok or not
-        if (Physics2D.OverlapCircle(transform.position, 1.5f))
+        //Disable the car collider so we can perform an overlapped check 
+        carCollider.enabled = false;
+
+        //Do not check for collisions with triggers
+        ContactFilter2D contactFilter2D = new ContactFilter2D();
+        contactFilter2D.useTriggers = false;
+
+        Collider2D[] hitResults = new Collider2D[2];
+
+        int numberOfHitObjects = Physics2D.OverlapCircle(transform.position, 1.5f, contactFilter2D, hitResults);
+
+        //Enable the car collider again so we can detect things with the trigger. 
+        carCollider.enabled = true;
+
+        //Check if landing is ok or not, if we hit zero objects then it is ok
+        if (numberOfHitObjects != 0)
         {
             //Something is below the car so we need to jump again
             isJumping = false;
 
             //add a small jump and push the car forward a bit. 
-            Jump(0.2f, 0.6f);
+            Jump(0.2f, 0.6f, carColliderLayerBeforeJump);
         }
         else
         {
@@ -224,10 +236,11 @@ public class TopDownCarController : MonoBehaviour
             carShadowRenderer.transform.localPosition = Vector3.zero;
             carShadowRenderer.transform.localScale = carSpriteRenderer.transform.localScale;
 
-            //We are safe to land, so enable collider
-            carCollider.enabled = true;
+            //We are safe to land, so enable change the collision layer back to what it was before we jumped
+            int validLayer = Mathf.Clamp(carColliderLayerBeforeJump, 0, 31);
+            carCollider.gameObject.layer = validLayer;
 
-             //Change sorting layer to regular layer
+            //Change sorting layer to regular layer
             carSpriteRenderer.sortingLayerName = "Default";
             carShadowRenderer.sortingLayerName = "Default";
 
@@ -244,6 +257,11 @@ public class TopDownCarController : MonoBehaviour
         }
     }
 
+    public bool IsJumping()
+    {
+        return isJumping;
+    }
+
     //Detect Jump trigger
     void OnTriggerEnter2D(Collider2D collider2d)
     {
@@ -251,7 +269,7 @@ public class TopDownCarController : MonoBehaviour
         {
             //Get the jump data from the jump
             JumpData jumpData = collider2d.GetComponent<JumpData>();
-            Jump(jumpData.jumpHeightScale, jumpData.jumpPushScale);
+            Jump(jumpData.jumpHeightScale, jumpData.jumpPushScale, carCollider.gameObject.layer);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
@@ -127,14 +127,6 @@ public class CarAIHandler : MonoBehaviour
 
             //Store how close we are to the target
             float distanceToWayPoint = (targetPosition - transform.position).magnitude;
-
-            Vector3 nearestPointOnTheWayPointLine = FindNearestPointOnLine(previousWaypoint.transform.position, currentWaypoint.transform.position, transform.position);
-
-            float segments = distanceToWayPoint / 20.0f;
-
-            targetPosition = (targetPosition + nearestPointOnTheWayPointLine * segments) / (segments + 1);
-
-            Debug.DrawLine(transform.position, targetPosition, Color.cyan);
 
             //Check if we are close enough to consider that we have reached the waypoint
             if (distanceToWayPoint <= currentWaypoint.minDistanceToReachWaypoint)

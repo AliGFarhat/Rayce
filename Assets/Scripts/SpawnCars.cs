@@ -4,13 +4,12 @@ using UnityEngine;
 
 public class SpawnCars : MonoBehaviour
 {
-    public PositionHandler positionHandler; // Reference to the PositionHandler
-
+    // Start is called before the first frame update
     void Start()
     {
         GameObject[] spawnPoints = GameObject.FindGameObjectsWithTag("SpawnPoint");
 
-        // Load the car data
+        //Load the car data
         CarData[] carDatas = Resources.LoadAll<CarData>("CarData/");
 
         for (int i = 0; i < spawnPoints.Length; i++)
@@ -19,27 +18,29 @@ public class SpawnCars : MonoBehaviour
 
             int playerSelectedCarID = PlayerPrefs.GetInt($"P{i + 1}SelectedCarID");
 
-            // Find the player cars prefab
+            //Find the selected car
             foreach (CarData cardata in carDatas)
             {
-                // We found the car data for the player
+                //We found the car data for the player
                 if (cardata.CarUniqueID == playerSelectedCarID)
                 {
-                    // Spawn the car at the spawn point
-                    GameObject playerCar = Instantiate(cardata.CarPrefab, spawnPoint.position, spawnPoint.rotation);
+                    //Now spawn it on the spawnpoint
+                    GameObject car = Instantiate(cardata.CarPrefab, spawnPoint.position, spawnPoint.rotation);
 
-                    // Assign the player number
-                    playerCar.GetComponent<CarInputHandler>().playerNumber = i + 1;
+                    int playerNumber = i + 1;
 
-                    // Register the car with the PositionHandler
-                    CarLapCounter carLapCounter = playerCar.GetComponent<CarLapCounter>();
-                    if (positionHandler != null && carLapCounter != null)
+                    car.GetComponent<CarInputHandler>().playerNumber = i + 1;
+
+                    if (PlayerPrefs.GetInt($"P{playerNumber}_IsAI") == 1)
                     {
-                        positionHandler.RegisterCar(carLapCounter);
+                        car.GetComponent<CarInputHandler>().enabled = false;
+                        car.tag = "AI";
                     }
                     else
                     {
-                        Debug.LogError("PositionHandler or CarLapCounter is missing!");
+                        car.GetComponent<CarAIHandler>().enabled = false;
+                        car.GetComponent<AStarLite>().enabled = false;
+                        car.tag = "Player";
                     }
 
                     break;
@@ -47,4 +48,5 @@ public class SpawnCars : MonoBehaviour
             }
         }
     }
+
 }
