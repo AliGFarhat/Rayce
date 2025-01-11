@@ -63,6 +63,9 @@ public class CarAIHandler : MonoBehaviour
     // Update is called once per frame and is frame dependent
     void FixedUpdate()
     {
+        if (GameManager.instance.GetGameState() == GameStates.countDown)
+            return;
+
         Vector2 inputVector = Vector2.zero;
 
         switch (aiMode)

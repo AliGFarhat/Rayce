@@ -22422,7 +22422,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxSpeed: 0
-  minDistanceToReachWaypoint: 15
+  minDistanceToReachWaypoint: 12
   nextWaypointNode:
   - {fileID: 1085757349}
 --- !u!1001 &1515147158

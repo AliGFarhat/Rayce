@@ -179,11 +179,15 @@ public class TopDownCarController : MonoBehaviour
         carSpriteRenderer.sortingLayerName = "Flying";
         carShadowRenderer.sortingLayerName = "Flying";
 
+        //Disable the car collider so we can perform an overlapped check 
+        carCollider.enabled = false;
+
         //Push the object forward as we passed a jump
         carRigidbody2D.AddForce(carRigidbody2D.velocity.normalized * jumpPushScale * 10, ForceMode2D.Impulse);
 
         while (isJumping)
         {
+
             //Percentage 0 - 1.0 of where we are in the jumping process
             float jumpCompletedPercentage = (Time.time - jumpStartTime) / jumpDuration;
             jumpCompletedPercentage = Mathf.Clamp01(jumpCompletedPercentage);
@@ -203,9 +207,6 @@ public class TopDownCarController : MonoBehaviour
 
             yield return null;
         }
-
-        //Disable the car collider so we can perform an overlapped check 
-        carCollider.enabled = false;
 
         //Do not check for collisions with triggers
         ContactFilter2D contactFilter2D = new ContactFilter2D();
@@ -227,6 +228,7 @@ public class TopDownCarController : MonoBehaviour
             //add a small jump and push the car forward a bit. 
             Jump(0.2f, 0.6f, carColliderLayerBeforeJump);
         }
+        
         else
         {
             //Handle landing, scale back the object
@@ -237,8 +239,8 @@ public class TopDownCarController : MonoBehaviour
             carShadowRenderer.transform.localScale = carSpriteRenderer.transform.localScale;
 
             //We are safe to land, so enable change the collision layer back to what it was before we jumped
-            int validLayer = Mathf.Clamp(carColliderLayerBeforeJump, 0, 31);
-            carCollider.gameObject.layer = validLayer;
+            carCollider.gameObject.layer = carColliderLayerBeforeJump;
+
 
             //Change sorting layer to regular layer
             carSpriteRenderer.sortingLayerName = "Default";
