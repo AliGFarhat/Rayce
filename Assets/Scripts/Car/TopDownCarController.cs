@@ -32,6 +32,7 @@ public class TopDownCarController : MonoBehaviour
     Rigidbody2D carRigidbody2D;
     Collider2D carCollider;
     CarSfxHandler carSfxHandler;
+    CarSurfaceHandler carSurfaceHandler;
 
     //Awake is called when the script instance is being loaded.
     void Awake()
@@ -39,6 +40,7 @@ public class TopDownCarController : MonoBehaviour
         carRigidbody2D = GetComponent<Rigidbody2D>();
         carCollider = GetComponentInChildren<Collider2D>();
         carSfxHandler = GetComponent<CarSfxHandler>();
+        carSurfaceHandler = GetComponent<CarSurfaceHandler>();
     }
 
     void Start()
@@ -68,7 +70,24 @@ public class TopDownCarController : MonoBehaviour
         //Apply drag if there is no accelerationInput so the car stops when the player lets go of the accelerator
         if (accelerationInput == 0)
             carRigidbody2D.drag = Mathf.Lerp(carRigidbody2D.drag, 3.0f, Time.fixedDeltaTime * 3);
-        else carRigidbody2D.drag = 0;
+        else carRigidbody2D.drag = Mathf.Lerp(carRigidbody2D.drag, 0, Time.fixedDeltaTime * 10);
+
+        //Apply more drag depending on surface
+        switch (GetSurface())
+        {
+            case Surface.SurfaceTypes.Sand:
+                carRigidbody2D.drag = Mathf.Lerp(carRigidbody2D.drag, 9.0f, Time.fixedDeltaTime * 3);
+                break;
+
+            case Surface.SurfaceTypes.Grass:
+                carRigidbody2D.drag = Mathf.Lerp(carRigidbody2D.drag, 10.0f, Time.fixedDeltaTime * 3);
+                break;
+
+            case Surface.SurfaceTypes.Oil:
+                carRigidbody2D.drag = 0;
+                accelerationInput = Mathf.Clamp(accelerationInput, 0, 1.0f);
+                break;
+        }
 
         //Caculate how much "forward" we are going in terms of the direction of our velocity
         velocityVsUp = Vector2.Dot(transform.up, carRigidbody2D.velocity);
@@ -111,8 +130,22 @@ public class TopDownCarController : MonoBehaviour
         Vector2 forwardVelocity = transform.up * Vector2.Dot(carRigidbody2D.velocity, transform.up);
         Vector2 rightVelocity = transform.right * Vector2.Dot(carRigidbody2D.velocity, transform.right);
 
+        float currentDriftFactor = driftFactor;
+
+        //Apply more drag depending on surface
+        switch (GetSurface())
+        {
+            case Surface.SurfaceTypes.Sand:
+                currentDriftFactor *= 1.05f;
+                break;
+
+            case Surface.SurfaceTypes.Oil:
+                currentDriftFactor = 1.00f;
+                break;
+        }
+
         //Kill the orthogonal velocity (side velocity) based on how much the car should drift. 
-        carRigidbody2D.velocity = forwardVelocity + rightVelocity * driftFactor;
+        carRigidbody2D.velocity = forwardVelocity + rightVelocity * currentDriftFactor;
     }
 
     float GetLateralVelocity()
@@ -154,6 +187,12 @@ public class TopDownCarController : MonoBehaviour
         return carRigidbody2D.velocity.magnitude;
     }
 
+    public Surface.SurfaceTypes GetSurface()
+    {
+        return carSurfaceHandler.GetCurrentSurface();
+    }
+
+
     public void Jump(float jumpHeightScale, float jumpPushScale, int carColliderLayerBeforeJump)
     {
         if (!isJumping)
@@ -187,7 +226,6 @@ public class TopDownCarController : MonoBehaviour
 
         while (isJumping)
         {
-
             //Percentage 0 - 1.0 of where we are in the jumping process
             float jumpCompletedPercentage = (Time.time - jumpStartTime) / jumpDuration;
             jumpCompletedPercentage = Mathf.Clamp01(jumpCompletedPercentage);
@@ -226,9 +264,8 @@ public class TopDownCarController : MonoBehaviour
             isJumping = false;
 
             //add a small jump and push the car forward a bit. 
-            Jump(0.2f, 1.3f, carColliderLayerBeforeJump);
+            Jump(0.2f, 0.6f, carColliderLayerBeforeJump);
         }
-        
         else
         {
             //Handle landing, scale back the object
