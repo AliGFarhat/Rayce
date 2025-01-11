@@ -61,6 +61,7 @@ public class CarLapCounter : MonoBehaviour
 
     }
 
+
     void OnTriggerEnter2D(Collider2D collider2D)
     {
         if (collider2D.CompareTag("CheckPoint"))
@@ -94,10 +95,21 @@ public class CarLapCounter : MonoBehaviour
                 //Invoke the passed checkpoint event
                 OnPassCheckpoint?.Invoke(this);
 
-                //Now show the cars position as it has been calculated
+                //Now show the cars position as it has been calculated but only do it when a car passes through the finish line
                 if (isRaceCompleted)
+                {
                     StartCoroutine(ShowPositionCO(100));
-                else StartCoroutine(ShowPositionCO(1.5f));
+
+                    if (CompareTag("Player"))
+                    {
+                        GameManager.instance.OnRaceCompleted();
+
+                        GetComponent<CarInputHandler>().enabled = false;
+                        GetComponent<CarAIHandler>().enabled = true;
+                        GetComponent<AStarLite>().enabled = true;
+                    }
+                }
+                else if (checkPoint.isFinishLine) StartCoroutine(ShowPositionCO(1.5f));
             }
         }
     }

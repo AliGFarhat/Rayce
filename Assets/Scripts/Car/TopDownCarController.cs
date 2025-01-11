@@ -226,7 +226,7 @@ public class TopDownCarController : MonoBehaviour
             isJumping = false;
 
             //add a small jump and push the car forward a bit. 
-            Jump(0.2f, 0.6f, carColliderLayerBeforeJump);
+            Jump(0.2f, 1.3f, carColliderLayerBeforeJump);
         }
         
         else

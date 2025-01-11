@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System;
 
 public enum GameStates { countDown, running, raceOver };
 
@@ -10,7 +11,15 @@ public class GameManager : MonoBehaviour
     //Static instance of GameManager so other scripts can access it
     public static GameManager instance = null;
 
+    //States
     GameStates gameState = GameStates.countDown;
+
+    //Time
+    float raceStartedTime = 0;
+    float raceCompletedTime = 0;
+
+    //Events
+    public event Action<GameManager> OnGameStateChanged;
 
     private void Awake()
     {
@@ -43,13 +52,43 @@ public class GameManager : MonoBehaviour
         return gameState;
     }
 
+    void ChangeGameState(GameStates newGameState)
+    {
+        if (gameState != newGameState)
+        {
+            gameState = newGameState;
+
+            //Invoke game state change event
+            OnGameStateChanged?.Invoke(this);
+        }
+    }
+
+    public float GetRaceTime()
+    {
+        if (gameState == GameStates.countDown)
+            return 0;
+        else if (gameState == GameStates.raceOver)
+            return raceCompletedTime - raceStartedTime;
+        else return Time.time - raceStartedTime;
+    }
+
     public void OnRaceStart()
     {
         Debug.Log("OnRaceStart");
 
-        gameState = GameStates.running;
+        raceStartedTime = Time.time;
 
+        ChangeGameState(GameStates.running);
     }
+    public void OnRaceCompleted()
+    {
+        Debug.Log("OnRaceCompleted");
+
+        raceCompletedTime = Time.time;
+
+        ChangeGameState(GameStates.raceOver);
+    }
+
 
     private void OnEnable()
     {

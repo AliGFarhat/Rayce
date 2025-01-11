@@ -128,7 +128,7 @@ public class CarAIHandler : MonoBehaviour
             //Set the target position of for the AI. 
             targetPosition = currentWaypoint.transform.position;
 
-            //Store how close we are to the target
+            //Store how close we are to the target  
             float distanceToWayPoint = (targetPosition - transform.position).magnitude;
 
             //Check if we are close enough to consider that we have reached the waypoint
