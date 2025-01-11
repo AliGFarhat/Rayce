@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -75,19 +76,30 @@ public class SelectCarUIHandler : MonoBehaviour
 
     public void OnSelectCar()
     {
-        PlayerPrefs.SetInt("P1SelectedCarID", carDatas[selectedCarIndex].CarUniqueID);
-        PlayerPrefs.SetInt("P1_IsAI", 0);
+        GameManager.instance.ClearDriversList();
 
-        PlayerPrefs.SetInt("P2SelectedCarID", carDatas[Random.Range(0, carDatas.Length)].CarUniqueID);
-        PlayerPrefs.SetInt("P2_IsAI", 1);
+        GameManager.instance.AddDriverToList(1, "P1", carDatas[selectedCarIndex].CarUniqueID, false);
 
-        PlayerPrefs.SetInt("P3SelectedCarID", carDatas[Random.Range(0, carDatas.Length)].CarUniqueID);
-        PlayerPrefs.SetInt("P3_IsAI", 1);
+        //Create a new list of cars
+        List<CarData> uniqueCars = new List<CarData>(carDatas);
 
-        PlayerPrefs.SetInt("P4SelectedCarID", carDatas[Random.Range(0, carDatas.Length)].CarUniqueID);
-        PlayerPrefs.SetInt("P4_IsAI", 1);
+        //Remove the car that player has selected
+        uniqueCars.Remove(carDatas[selectedCarIndex]);
 
-        PlayerPrefs.Save();
+        string[] names = { "Freddy", "Eddy", "Teddy", "Buddy", "Luddy", "Puddy" };
+        List<string> uniqueNames = names.ToList<string>();
+
+        //Add AI drivers
+        for (int i = 2; i < 5; i++)
+        {
+            string driverName = uniqueNames[Random.Range(0, uniqueNames.Count)];
+            uniqueNames.Remove(driverName);
+
+            CarData carData = uniqueCars[Random.Range(0, uniqueCars.Count)];
+
+            GameManager.instance.AddDriverToList(i, driverName, carData.CarUniqueID, true);
+
+        }
 
         SceneManager.LoadScene("Track1");
     }
