@@ -23,9 +23,21 @@ public class CarLapCounter : MonoBehaviour
     bool isHideRoutineRunning = false;
     float hideUIDelayTime;
 
+    //Other components
+    LapCounterUIHandler lapCounterUIHandler;
+
 
     //Events
     public event Action<CarLapCounter> OnPassCheckpoint;
+
+    void Start()
+    {
+        if (CompareTag("Player"))
+        {
+            lapCounterUIHandler = FindObjectOfType<LapCounterUIHandler>();
+            lapCounterUIHandler.SetLapText($"LAP {lapsCompleted + 1}/{lapsToComplete}");
+        }
+    }
 
     public void SetCarPosition(int position)
     {
@@ -39,6 +51,11 @@ public class CarLapCounter : MonoBehaviour
     public float GetTimeAtLastCheckPoint()
     {
         return timeAtLastPassedCheckPoint;
+    }
+
+    public bool IsRaceCompleted()
+    {
+        return isRaceCompleted;
     }
 
     IEnumerator ShowPositionCO(float delayUntilHidePosition)
@@ -89,6 +106,9 @@ public class CarLapCounter : MonoBehaviour
 
                     if (lapsCompleted >= lapsToComplete)
                         isRaceCompleted = true;
+
+                    if (!isRaceCompleted && lapCounterUIHandler != null)
+                        lapCounterUIHandler.SetLapText($"LAP {lapsCompleted + 1}/{lapsToComplete}");
                 }
 
 
