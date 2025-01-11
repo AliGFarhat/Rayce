@@ -174,19 +174,36 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        if (sceneName == "Menu") // Apply Lowpass effect in Scene1
+        if (sceneName == "Menu") // Apply Lowpass effect in the first scene
         {
-            audioMixer.SetFloat("LowpassCutoff", 700); // Set the cutoff frequency to a low value
-            Debug.Log("Applied Lowpass effect with cutoff 700 Hz.");
+            StartCoroutine(FadeLowpass(2000f, 500f, 2f)); // 2 seconds fade to 500 Hz
+            Debug.Log("Started fading to lowpass effect.");
         }
-        else if (sceneName == "Track1") // Remove Lowpass effect in Scene2
+        else if (sceneName == "Track1") // Remove Lowpass effect in the second scene AKA "Track1"-
         {
-            audioMixer.SetFloat("LowpassCutoff", 22000f); // Set the cutoff frequency to max (effectively bypassing it)
-            Debug.Log("Removed Lowpass effect by setting cutoff to 22000 Hz.");
+            StartCoroutine(FadeLowpass(500f, 22000f, 3.5f)); // 3.5 seconds fade to 22000 Hz    
+            Debug.Log("Started fading out lowpass effect.");
         }
         else
         {
             Debug.Log($"No specific audio effect handling for scene: {sceneName}");
         }
+    }
+
+
+    IEnumerator FadeLowpass(float startValue, float targetValue, float duration)
+    {
+        float elapsedTime = 0f;
+
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            float newValue = Mathf.Lerp(startValue, targetValue, elapsedTime / duration);
+            audioMixer.SetFloat("LowpassCutoff", newValue);
+            yield return null; // Wait for the next frame
+        }
+
+        // Ensure the final value is set
+        audioMixer.SetFloat("LowpassCutoff", targetValue);
     }
 }
