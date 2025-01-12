@@ -176,12 +176,12 @@ public class GameManager : MonoBehaviour
 
         if (sceneName == "Menu") // Apply Lowpass effect in the first scene
         {
-            StartCoroutine(FadeLowpass(2000f, 500f, 2f)); // 2 seconds fade to 500 Hz
+            StartCoroutine(FadeLowpass(2000f, 700, 2f)); // 2 seconds fade to 700 Hz
             Debug.Log("Started fading to lowpass effect.");
         }
         else if (sceneName == "Track1") // Remove Lowpass effect in the second scene AKA "Track1"-
         {
-            StartCoroutine(FadeLowpass(500f, 22000f, 3.5f)); // 3.5 seconds fade to 22000 Hz    
+            StartCoroutine(FadeLowpass(700, 22000f, 3.5f)); // 3.5 seconds fade to 22000 Hz    
             Debug.Log("Started fading out lowpass effect.");
         }
         else
